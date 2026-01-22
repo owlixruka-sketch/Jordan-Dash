@@ -725,7 +725,7 @@ class_info = {
 # DASH APP
 # ===========
 
-app = dash.Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.FONT_AWESOME])
 app.title = "Water Accounting Jordan"
 
 basin_folders = [d for d in os.listdir(BASIN_DIR) if os.path.isdir(os.path.join(BASIN_DIR, d))] if os.path.isdir(BASIN_DIR) else []
@@ -734,6 +734,12 @@ basin_options = [{"label": "Select a Basin...", "value": "none"}] + [{"label": b
 # Static Text Content
 INTRO_TEXT = read_common_text("intro.txt")
 OBJECTIVES_TEXT = read_common_text("objectives.txt")
+
+with open('workflow.svg', 'rb') as f:
+    workflow_svg_encoded = base64.b64encode(f.read()).decode('utf-8')
+
+with open('flowchart.svg', 'rb') as f:
+    flowchart_svg_encoded = base64.b64encode(f.read()).decode('utf-8')
 
 WA_FRAMEWORK_TEXT = """
 WA+ is a robust framework that harnesses the potential of publicly available remote sensing data to assess water resources and their consumption. Its reliance on such data is particularly beneficial in data scarce areas and transboundary basins. A significant benefit of WA+ lies in its incorporation of land use classification into water resource assessments, promoting a holistic approach to land and water management. This integration is crucial for sustaining food production amidst a changing climate, especially in regions where water is scarce. Notably, WA+ application has predominantly centered on monitoring water consumption in irrigated agriculture. The WA+ approach builds on a simplified water balance equation for a basin (Karimi et al., 2013):
@@ -814,6 +820,7 @@ def get_header():
         style={"backgroundColor": THEME_COLOR, "padding": "0 20px", "display": "flex", "alignItems": "center", "justifyContent": "space-between"},
         children=[
             html.Div(className="navbar-brand-group", style={"display": "flex", "alignItems": "center", "padding": "10px 0"}, children=[
+                html.Img(src=app.get_asset_url('Picture1.png'), style={"height": "50px", "marginRight": "15px"}),
                 html.Img(src=app.get_asset_url('iwmi.png'), style={"height": "50px", "marginRight": "15px", "filter": "brightness(0) invert(1)"}),
                 html.H1("Rapid Water Accounting - Jordan", style={"color": "white", "margin": 0, "fontSize": "1.5rem", "fontWeight": "600", "fontFamily": "Segoe UI, sans-serif"}),
             ]),
@@ -826,7 +833,8 @@ def get_header():
                 ])
             ]),
             html.Div(className="nav-links", style={"display": "flex", "alignItems": "center"}, children=[
-                html.Img(src=app.get_asset_url('cgiar.png'), style={"height": "40px", "filter": "brightness(0) invert(1)"}),
+                html.Img(src=app.get_asset_url('cgiar.png'), style={"height": "40px", "filter": "brightness(0) invert(1)", "marginRight": "15px"}),
+                html.Img(src=app.get_asset_url('Picture2.png'), style={"height": "50px"}),
             ])
         ]
     )
@@ -867,18 +875,18 @@ def get_home_content():
         # Features Section
         html.Div(className="content-section", style={"maxWidth": "1200px", "margin": "0 auto", "padding": "0 20px"}, children=[
             html.Div(className="grid-3", style={"display": "grid", "gridTemplateColumns": "repeat(auto-fit, minmax(300px, 1fr))", "gap": "30px"}, children=[
-                html.Div(className="feature-card", style={"backgroundColor": "white", "padding": "30px", "borderRadius": "10px", "boxShadow": "0 4px 6px rgba(0,0,0,0.1)", "borderTop": f"5px solid {THEME_COLOR}", "overflow": "hidden"}, children=[
-                    html.Img(src="https://images.unsplash.com/photo-1664577864712-3ead0e0c439d?fm=jpg&q=80&w=600", style={"width": "calc(100% + 60px)", "height": "200px", "objectFit": "cover", "margin": "-30px -30px 20px -30px"}),
+                html.Div(className="feature-card", style={"backgroundColor": "white", "padding": "30px", "borderRadius": "10px", "boxShadow": "0 4px 6px rgba(0,0,0,0.1)", "borderTop": f"5px solid {THEME_COLOR}", "overflow": "hidden", "textAlign": "center"}, children=[
+                    html.I(className="fas fa-water", style={"fontSize": "50px", "color": THEME_COLOR, "marginBottom": "20px"}),
                     html.H3("Basin Analysis", style={"color": THEME_COLOR, "fontWeight": "600", "marginBottom": "10px"}),
                     html.P("Interactive maps and metrics for major basins in Jordan. Analyze inflows, outflows, and storage changes.", style={"color": "#666", "lineHeight": "1.6"})
                 ]),
-                html.Div(className="feature-card", style={"backgroundColor": "white", "padding": "30px", "borderRadius": "10px", "boxShadow": "0 4px 6px rgba(0,0,0,0.1)", "borderTop": f"5px solid {THEME_COLOR}", "overflow": "hidden"}, children=[
-                    html.Img(src="https://images.unsplash.com/photo-1630159385480-2f3ddbc307cd?fm=jpg&q=80&w=600", style={"width": "calc(100% + 60px)", "height": "200px", "objectFit": "cover", "margin": "-30px -30px 20px -30px"}),
+                html.Div(className="feature-card", style={"backgroundColor": "white", "padding": "30px", "borderRadius": "10px", "boxShadow": "0 4px 6px rgba(0,0,0,0.1)", "borderTop": f"5px solid {THEME_COLOR}", "overflow": "hidden", "textAlign": "center"}, children=[
+                    html.I(className="fas fa-cloud-sun-rain", style={"fontSize": "50px", "color": THEME_COLOR, "marginBottom": "20px"}),
                     html.H3("Climate Data", style={"color": THEME_COLOR, "fontWeight": "600", "marginBottom": "10px"}),
                     html.P("Visualize long-term precipitation and evapotranspiration trends derived from high-resolution satellite data.", style={"color": "#666", "lineHeight": "1.6"})
                 ]),
-                html.Div(className="feature-card", style={"backgroundColor": "white", "padding": "30px", "borderRadius": "10px", "boxShadow": "0 4px 6px rgba(0,0,0,0.1)", "borderTop": f"5px solid {THEME_COLOR}", "overflow": "hidden"}, children=[
-                    html.Img(src="https://images.unsplash.com/photo-1666433611778-c5e72528151a?fm=jpg&q=80&w=600", style={"width": "calc(100% + 60px)", "height": "200px", "objectFit": "cover", "margin": "-30px -30px 20px -30px"}),
+                html.Div(className="feature-card", style={"backgroundColor": "white", "padding": "30px", "borderRadius": "10px", "boxShadow": "0 4px 6px rgba(0,0,0,0.1)", "borderTop": f"5px solid {THEME_COLOR}", "overflow": "hidden", "textAlign": "center"}, children=[
+                    html.I(className="fas fa-file-alt", style={"fontSize": "50px", "color": THEME_COLOR, "marginBottom": "20px"}),
                     html.H3("WA+ Reporting", style={"color": THEME_COLOR, "fontWeight": "600", "marginBottom": "10px"}),
                     html.P("Standardized Water Accounting Plus (WA+) sheets and indicators to support evidence-based decision making.", style={"color": "#666", "lineHeight": "1.6"})
                 ])
@@ -1066,6 +1074,10 @@ def render_tab_content(active_tab):
              html.Div(className="graph-card", style={"padding": "30px", "backgroundColor": "white", "borderRadius": "10px", "boxShadow": "0 4px 6px rgba(0,0,0,0.1)", "marginBottom": "30px"}, children=[
                 html.H2("Introduction", style={"color": THEME_COLOR, "marginBottom": "20px"}),
                 dcc.Markdown(INTRO_TEXT, className="markdown-content"),
+                dcc.Markdown("""
+                    This dashboard provides a rapid assessment of water resources in Jordan using the Water Accounting Plus (WA+) framework.
+                    It is designed to provide a comprehensive overview of water availability, use, and consumption in a selected basin.
+                """, className="markdown-content"),
             ]),
             html.Div(className="graph-card", style={"padding": "30px", "backgroundColor": "white", "borderRadius": "10px", "boxShadow": "0 4px 6px rgba(0,0,0,0.1)", "marginBottom": "30px"}, children=[
                 html.H2("Objectives and Deliverables", style={"color": THEME_COLOR, "marginBottom": "20px"}),
@@ -1083,6 +1095,8 @@ def render_tab_content(active_tab):
             html.Div(className="graph-card", style={"padding": "30px", "backgroundColor": "white", "borderRadius": "10px", "boxShadow": "0 4px 6px rgba(0,0,0,0.1)", "marginBottom": "30px"}, children=[
                 html.H2("Customized WA+ Analytics for Jordan", style={"color": THEME_COLOR, "marginBottom": "20px"}),
                 dcc.Markdown(WA_FRAMEWORK_TEXT, className="markdown-content"),
+                html.Img(src=f"data:image/svg+xml;base64,{workflow_svg_encoded}", style={'width': '100%'}),
+                html.Img(src=f"data:image/svg+xml;base64,{flowchart_svg_encoded}", style={'width': '100%'}),
             ]),
             html.Div(className="graph-card", style={"padding": "30px", "backgroundColor": "white", "borderRadius": "10px", "boxShadow": "0 4px 6px rgba(0,0,0,0.1)"}, children=[
                 html.H2("Interactive Water Balance Simulator", style={"color": THEME_COLOR, "marginBottom": "20px"}),
