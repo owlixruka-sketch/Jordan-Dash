@@ -725,7 +725,7 @@ class_info = {
 # DASH APP
 # ===========
 
-app = dash.Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.FONT_AWESOME])
 app.title = "Water Accounting Jordan"
 
 basin_folders = [d for d in os.listdir(BASIN_DIR) if os.path.isdir(os.path.join(BASIN_DIR, d))] if os.path.isdir(BASIN_DIR) else []
@@ -735,41 +735,67 @@ basin_options = [{"label": "Select a Basin...", "value": "none"}] + [{"label": b
 INTRO_TEXT = read_common_text("intro.txt")
 OBJECTIVES_TEXT = read_common_text("objectives.txt")
 
-WA_FRAMEWORK_TEXT = """
+with open('workflow.svg', 'rb') as f:
+    workflow_svg_encoded = base64.b64encode(f.read()).decode('utf-8')
+
+with open('flowchart.svg', 'rb') as f:
+    flowchart_svg_encoded = base64.b64encode(f.read()).decode('utf-8')
+
+FRAMEWORK_TEXT_PART1 = """
+### 2.2 Customized WA+ Analytical Framework for Jordan
 WA+ is a robust framework that harnesses the potential of publicly available remote sensing data to assess water resources and their consumption. Its reliance on such data is particularly beneficial in data scarce areas and transboundary basins. A significant benefit of WA+ lies in its incorporation of land use classification into water resource assessments, promoting a holistic approach to land and water management. This integration is crucial for sustaining food production amidst a changing climate, especially in regions where water is scarce. Notably, WA+ application has predominantly centered on monitoring water consumption in irrigated agriculture. The WA+ approach builds on a simplified water balance equation for a basin (Karimi et al., 2013):
 
-**∆S/∆t = P - ET - Q_out**                                                                                   (1)
+"$$\\frac{\Delta S}{\Delta t} = P - ET - Q_{out} \quad (1)$$"
 
 Where:
-*   **∆S** is the change in storage
-*   **∆t** is the change in time
-*   **P** is precipitation (mm/year or m3/year)
-*   **ET** is total actual evapotranspiration (mm/year or m3/year)
-*   **Qout** is total surface water outflow (mm/year or m3/year)
+- **&Delta;S** is the change in storage
+- **&Delta;t** is the change in time
+- **P** is precipitation (mm/year or m³/year)
+- **ET** is total actual evapotranspiration (mm/year or m³/year)
+- **Qout** is total surface water outflow (mm/year or m³/year)
 
 To utilize the WA+ approach for water budget reporting in Jordan, it is important to account for all water users, other than irrigation, and their return flows into equation 1. Also, in Jordan, man-made inflows and outflows of great importance especially in heavily populated basins (Amdar et al., 2024). Therefore, an updated water balance incorporating various sectoral water consumption in addition to inflow and outflows is proposed (Amdar et al., 2024). Hence, equation (2) represents the updated WA+ water balance equation in the context of Jordan. This modification will further be refined following detailed discussions and consultations with the WEC and MWI team to ensure complete understanding and consensus of the customized framework for Jordan.
 
-**∆S/∆t = (P + Q_in) - (ET + CW_sec + Q_WWT + Q_re + Q_natural)**                               (2)
+"$$\\frac{\Delta S}{\Delta t} = (P + Q_{in}) - (ET + CW_{sec} + Q_{WWT} + Q_{re} + Q_{natural}) \quad (2)$$"
 
 where:
-*   **P** is the total precipitation (Mm3/year)
-*   **ET** is the total actual evapotranspiration (Mm3/year)
-*   **Qin** is the total inflows into the basin consisting of both surface water inflows and any other inter-basin transfers (Mm3/year)
-*   **Qre** is the total recharge to groundwater from precipitation and return flow (Mm3/year)
-*   **QWWT** is the total treated waste water that is returned to the river system after treatment. This could be from domestic, industry and tourism sectors (Mm3/year)
-*   **Qnatural** is the naturalized streamflow from the basin (Mm3/year)
-*   **CWsec** is the total non-irrigated water use/consumption (ie water that is not returned to the system but is consumed by humans) and is given by:
+- **P** is the total precipitation (Mm³/year)
+- **ET** is the total actual evapotranspiration (Mm³/year)
+- **Qin** is the total inflows into the basin consisting of both surface water inflows and any other inter-basin transfers (Mm³/year)
+- **Qre** is the total recharge to groundwater from precipitation and return flow (Mm³/year)
+- **QWWT** is the total treated waste water that is returned to the river system after treatment. This could be from domestic, industry and tourism sectors (Mm³/year)
+- **Qnatural** is the naturalized streamflow from the basin (Mm³/year)
+- **CWsec** is the total non-irrigated water use/consumption (ie water that is not returned to the system but is consumed by humans) and is given by:
 
-**CWsec = Supplydomestic + Supplyindustrial + Supplylivestock + Supplytourism**
-(3)
+"$$CW_{sec} = Supply_{domestic} + Supply_{industrial} + Supply_{livestock} + Supply_{tourism} \quad (3)$$"
 
 Where:
-*   **Supplydomestic** is the water supply for the domestic sector (Mm3/year)
-*   **Supplyindustrial** is the water supply for the industrial sector (Mm3/year)
-*   **Supplylivestock** is the water supply for the livestock sector (Mm3/year)
-*   **Supplytourism** is the water supply for the tourism sector (Mm3/year)
+- **Supplydomestic** is the water supply for the domestic sector (Mm³/year)
+- **Supplyindustrial** is the water supply for the industrial sector (Mm³/year)
+- **Supplylivestock** is the water supply for the livestock sector (Mm³/year)
+- **Supplytourism** is the water supply for the tourism sector (Mm³/year)
 
 The customized WA+ framework thus takes into account both agricultural and non-irrigated water consumption, water imports and the return of treated wastewater into the basin.
+
+### 2.3 Implementation of Customized WA+ Analytical Framework in the Amman zarqa basin
+Implementation of the WA+ framework involves automated collection, pre-processing and computation of the water balance for a river basin and its sub-basins through the WA+ toolbox. The customized framework for the Amman Zarqa basin consists of six major steps to calculate and present the water accounts (Figure 2): i) data download and pre-processing, ii) water balance modeling, iii) calibration/validation of streamflow, iv) estimation of non-agricultural water consumption, v) generation of water accounts, and vi) interpretation and presentation of results.
+"""
+
+FRAMEWORK_TEXT_PART2 = """
+During the data preparation step, various remote sensing datasets and tabular data are acquired from different sources. These datasets are then prepared for input and analyzed to select the most representative datasets for the basin of interest. This involves comparison with available in situ data, and any calibration needed to address systematic errors in the remotely sensed data.
+During the second step, the hydrological variability of the basin is characterized by computing various water balance indicators across the watershed using a water balance model. Assessment of the water balance is the core component of the approach; water balance equations are used to describe the flow of water in and out of a system. For the customized WA+ approach for Jordan, the water balance equation is calculated following Equation 4. The change in water storage (ΔS) within a river basin (or sub-basin) is calculated over a monitoring period (Δt) as the difference between the incoming and outgoing water flows. The incoming flows consist of rainfall (precipitation; P) and manmade inflows (Qin), and the outgoing flows consist of evapotranspiration (ET), treated waste water returned to stream (Qwwt), sectorial water consumption (CWsec), and outflows (Qout).
+
+"$$\\frac{\Delta S}{\Delta t} = (P + Q_{in}) - (ET + CW_{sec} + Q_{WWT} + Q_{natural}) \quad (4)$$"
+
+Precipitation and evaporation data were extracted from various remote sensing datasets; data on inflows (water imports for municipal use) and outflows (streamflows from gauge stations used for runoff calibration) were acquired from provided national databases.
+In the fourth step, the water balance results were validated and the model was calibrated by comparing the water balance parameters with in situ data.
+Following this, estimated internal withdrawals, treated waste water and water imports the basin were incorporated into the WA+ toolbox. These were summarized and interpolated from national databases from the governorate level to the basin scale. A full description are provided in section 2.6.1 Basin wide water balance parameters/indicators were then presented for each major land use class (agriculture, urban and natural) through a series of water accounts. The customized WA+ toolbox is summarized in Figure 3 and definitions of the water accounting indicators and a full description of the computation of indicators are provided in Appendix A and B respectively.
+"""
+
+FRAMEWORK_TEXT_PART3 = """
+Briefly, on downloading and gathering remote sensing and tabular data, the observed discharge estimates are combined with the other remote sensing data (precipitation, evapotranspiration, leaf area index etc.) for the soil moisture balance modeling. The soil moisture balance model is a pixel based vertical water balance model for the unsaturated root zone of every pixel that describes the exchanges between land and atmosphere fluxes (i.e. rainfall and evapotranspiration) by partitioning flow into infiltration and surface runoff. The model calculates for each pixel, the ET that is due to rainfall ET, (ETgreen) and that due to additional supply termed incremental ET (ETblue) by keeping track of the soil moisture balance (Figure 3). In the final step, non-irrigated water consumption data are combined with the outputs from the soil moisture balance model to generate water accounts at the basin scale.
+
+The WA+ model was run for the period 2015-2021 with the first 3 years used for “model warm-up” when only remote sensing data was available. Since discharge for the period was 2017-2021 were readily available, these directly served as input to the soil moisture water balance model, eliminating the need for GR rainfall-runoff modeling. The WA+ framework was used to generate the water accounts for the basin for the period 2018-2021. Briefly, the WA+ model was run by executing a number of python scripts in sequence. First all geospatial datasets were converted into stacked data cubes. The soil moisture balance routine was used to sperate out Green ET and Blue ET areas and determine water balance in the root zone. Finally, fluxes were separated and summarized per land use to generate the water accounts for the study period. The model was run for the period 2015-2021 on a monthly time scale with the first 3 years used for “model warm-up”.
 """
 
 LAND_USE_DATA = [
@@ -814,6 +840,7 @@ def get_header():
         style={"backgroundColor": THEME_COLOR, "padding": "0 20px", "display": "flex", "alignItems": "center", "justifyContent": "space-between"},
         children=[
             html.Div(className="navbar-brand-group", style={"display": "flex", "alignItems": "center", "padding": "10px 0"}, children=[
+                html.Img(src=app.get_asset_url('Picture1.png'), style={"height": "50px", "marginRight": "15px"}),
                 html.Img(src=app.get_asset_url('iwmi.png'), style={"height": "50px", "marginRight": "15px", "filter": "brightness(0) invert(1)"}),
                 html.H1("Rapid Water Accounting - Jordan", style={"color": "white", "margin": 0, "fontSize": "1.5rem", "fontWeight": "600", "fontFamily": "Segoe UI, sans-serif"}),
             ]),
@@ -826,7 +853,8 @@ def get_header():
                 ])
             ]),
             html.Div(className="nav-links", style={"display": "flex", "alignItems": "center"}, children=[
-                html.Img(src=app.get_asset_url('cgiar.png'), style={"height": "40px", "filter": "brightness(0) invert(1)"}),
+                html.Img(src=app.get_asset_url('cgiar.png'), style={"height": "40px", "filter": "brightness(0) invert(1)", "marginRight": "15px"}),
+                html.Img(src=app.get_asset_url('Picture2.png'), style={"height": "50px"}),
             ])
         ]
     )
@@ -867,18 +895,18 @@ def get_home_content():
         # Features Section
         html.Div(className="content-section", style={"maxWidth": "1200px", "margin": "0 auto", "padding": "0 20px"}, children=[
             html.Div(className="grid-3", style={"display": "grid", "gridTemplateColumns": "repeat(auto-fit, minmax(300px, 1fr))", "gap": "30px"}, children=[
-                html.Div(className="feature-card", style={"backgroundColor": "white", "padding": "30px", "borderRadius": "10px", "boxShadow": "0 4px 6px rgba(0,0,0,0.1)", "borderTop": f"5px solid {THEME_COLOR}", "overflow": "hidden"}, children=[
-                    html.Img(src="https://images.unsplash.com/photo-1664577864712-3ead0e0c439d?fm=jpg&q=80&w=600", style={"width": "calc(100% + 60px)", "height": "200px", "objectFit": "cover", "margin": "-30px -30px 20px -30px"}),
+                html.Div(className="feature-card", style={"backgroundColor": "white", "padding": "30px", "borderRadius": "10px", "boxShadow": "0 4px 6px rgba(0,0,0,0.1)", "borderTop": f"5px solid {THEME_COLOR}", "overflow": "hidden", "textAlign": "center"}, children=[
+                    html.I(className="fas fa-water", style={"fontSize": "50px", "color": THEME_COLOR, "marginBottom": "20px"}),
                     html.H3("Basin Analysis", style={"color": THEME_COLOR, "fontWeight": "600", "marginBottom": "10px"}),
                     html.P("Interactive maps and metrics for major basins in Jordan. Analyze inflows, outflows, and storage changes.", style={"color": "#666", "lineHeight": "1.6"})
                 ]),
-                html.Div(className="feature-card", style={"backgroundColor": "white", "padding": "30px", "borderRadius": "10px", "boxShadow": "0 4px 6px rgba(0,0,0,0.1)", "borderTop": f"5px solid {THEME_COLOR}", "overflow": "hidden"}, children=[
-                    html.Img(src="https://images.unsplash.com/photo-1630159385480-2f3ddbc307cd?fm=jpg&q=80&w=600", style={"width": "calc(100% + 60px)", "height": "200px", "objectFit": "cover", "margin": "-30px -30px 20px -30px"}),
+                html.Div(className="feature-card", style={"backgroundColor": "white", "padding": "30px", "borderRadius": "10px", "boxShadow": "0 4px 6px rgba(0,0,0,0.1)", "borderTop": f"5px solid {THEME_COLOR}", "overflow": "hidden", "textAlign": "center"}, children=[
+                    html.I(className="fas fa-cloud-sun-rain", style={"fontSize": "50px", "color": THEME_COLOR, "marginBottom": "20px"}),
                     html.H3("Climate Data", style={"color": THEME_COLOR, "fontWeight": "600", "marginBottom": "10px"}),
                     html.P("Visualize long-term precipitation and evapotranspiration trends derived from high-resolution satellite data.", style={"color": "#666", "lineHeight": "1.6"})
                 ]),
-                html.Div(className="feature-card", style={"backgroundColor": "white", "padding": "30px", "borderRadius": "10px", "boxShadow": "0 4px 6px rgba(0,0,0,0.1)", "borderTop": f"5px solid {THEME_COLOR}", "overflow": "hidden"}, children=[
-                    html.Img(src="https://images.unsplash.com/photo-1666433611778-c5e72528151a?fm=jpg&q=80&w=600", style={"width": "calc(100% + 60px)", "height": "200px", "objectFit": "cover", "margin": "-30px -30px 20px -30px"}),
+                html.Div(className="feature-card", style={"backgroundColor": "white", "padding": "30px", "borderRadius": "10px", "boxShadow": "0 4px 6px rgba(0,0,0,0.1)", "borderTop": f"5px solid {THEME_COLOR}", "overflow": "hidden", "textAlign": "center"}, children=[
+                    html.I(className="fas fa-file-alt", style={"fontSize": "50px", "color": THEME_COLOR, "marginBottom": "20px"}),
                     html.H3("WA+ Reporting", style={"color": THEME_COLOR, "fontWeight": "600", "marginBottom": "10px"}),
                     html.P("Standardized Water Accounting Plus (WA+) sheets and indicators to support evidence-based decision making.", style={"color": "#666", "lineHeight": "1.6"})
                 ])
@@ -1066,6 +1094,10 @@ def render_tab_content(active_tab):
              html.Div(className="graph-card", style={"padding": "30px", "backgroundColor": "white", "borderRadius": "10px", "boxShadow": "0 4px 6px rgba(0,0,0,0.1)", "marginBottom": "30px"}, children=[
                 html.H2("Introduction", style={"color": THEME_COLOR, "marginBottom": "20px"}),
                 dcc.Markdown(INTRO_TEXT, className="markdown-content"),
+                dcc.Markdown("""
+                    This dashboard provides a rapid assessment of water resources in Jordan using the Water Accounting Plus (WA+) framework.
+                    It is designed to provide a comprehensive overview of water availability, use, and consumption in a selected basin.
+                """, className="markdown-content"),
             ]),
             html.Div(className="graph-card", style={"padding": "30px", "backgroundColor": "white", "borderRadius": "10px", "boxShadow": "0 4px 6px rgba(0,0,0,0.1)", "marginBottom": "30px"}, children=[
                 html.H2("Objectives and Deliverables", style={"color": THEME_COLOR, "marginBottom": "20px"}),
@@ -1081,8 +1113,13 @@ def render_tab_content(active_tab):
     elif active_tab == "tab-framework":
         return html.Div(className="container", style={"maxWidth": "1200px"}, children=[
             html.Div(className="graph-card", style={"padding": "30px", "backgroundColor": "white", "borderRadius": "10px", "boxShadow": "0 4px 6px rgba(0,0,0,0.1)", "marginBottom": "30px"}, children=[
-                html.H2("Customized WA+ Analytics for Jordan", style={"color": THEME_COLOR, "marginBottom": "20px"}),
-                dcc.Markdown(WA_FRAMEWORK_TEXT, className="markdown-content"),
+                dcc.Markdown(FRAMEWORK_TEXT_PART1, className="markdown-content", mathjax=True),
+                html.Img(src=f"data:image/svg+xml;base64,{flowchart_svg_encoded}", style={'width': '100%'}),
+                html.P("Figure 2. The WA+ toolbox: main processing modules of the customized WA+ Framework for Jordan.", style={'textAlign': 'center', 'fontWeight': 'bold'}),
+                dcc.Markdown(FRAMEWORK_TEXT_PART2, className="markdown-content", mathjax=True),
+                html.Img(src=f"data:image/svg+xml;base64,{workflow_svg_encoded}", style={'width': '100%'}),
+                html.P("Figure 3. Customized water balance modeling work flow used in the WA+ Framework.", style={'textAlign': 'center', 'fontWeight': 'bold'}),
+                dcc.Markdown(FRAMEWORK_TEXT_PART3, className="markdown-content", mathjax=True),
             ]),
             html.Div(className="graph-card", style={"padding": "30px", "backgroundColor": "white", "borderRadius": "10px", "boxShadow": "0 4px 6px rgba(0,0,0,0.1)"}, children=[
                 html.H2("Interactive Water Balance Simulator", style={"color": THEME_COLOR, "marginBottom": "20px"}),
