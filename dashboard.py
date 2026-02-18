@@ -507,7 +507,7 @@ def load_and_process_data(basin_name: str, variable_type: str,
 # FIGURE CONSTRUCTORS
 # ==================
 
-THEME_COLOR = "#2B587A"
+THEME_COLOR = "#004ea2"
 
 def _clean_nan_data(da: xr.DataArray):
     """Remove NaN values and return clean data for plotting"""
@@ -741,11 +741,11 @@ with open('workflow.svg', 'rb') as f:
 with open('flowchart.svg', 'rb') as f:
     flowchart_svg_encoded = base64.b64encode(f.read()).decode('utf-8')
 
-FRAMEWORK_TEXT_PART1 = """
+FRAMEWORK_TEXT_PART1 = r"""
 ### 2.2 Customized WA+ Analytical Framework for Jordan
 WA+ is a robust framework that harnesses the potential of publicly available remote sensing data to assess water resources and their consumption. Its reliance on such data is particularly beneficial in data scarce areas and transboundary basins. A significant benefit of WA+ lies in its incorporation of land use classification into water resource assessments, promoting a holistic approach to land and water management. This integration is crucial for sustaining food production amidst a changing climate, especially in regions where water is scarce. Notably, WA+ application has predominantly centered on monitoring water consumption in irrigated agriculture. The WA+ approach builds on a simplified water balance equation for a basin (Karimi et al., 2013):
 
-"$$\\frac{\Delta S}{\Delta t} = P - ET - Q_{out} \quad (1)$$"
+"$$\frac{\Delta S}{\Delta t} = P - ET - Q_{out} \quad (1)$$"
 
 Where:
 - **&Delta;S** is the change in storage
@@ -756,7 +756,7 @@ Where:
 
 To utilize the WA+ approach for water budget reporting in Jordan, it is important to account for all water users, other than irrigation, and their return flows into equation 1. Also, in Jordan, man-made inflows and outflows of great importance especially in heavily populated basins (Amdar et al., 2024). Therefore, an updated water balance incorporating various sectoral water consumption in addition to inflow and outflows is proposed (Amdar et al., 2024). Hence, equation (2) represents the updated WA+ water balance equation in the context of Jordan. This modification will further be refined following detailed discussions and consultations with the WEC and MWI team to ensure complete understanding and consensus of the customized framework for Jordan.
 
-"$$\\frac{\Delta S}{\Delta t} = (P + Q_{in}) - (ET + CW_{sec} + Q_{WWT} + Q_{re} + Q_{natural}) \quad (2)$$"
+"$$\frac{\Delta S}{\Delta t} = (P + Q_{in}) - (ET + CW_{sec} + Q_{WWT} + Q_{re} + Q_{natural}) \quad (2)$$"
 
 where:
 - **P** is the total precipitation (Mm³/year)
@@ -781,11 +781,11 @@ The customized WA+ framework thus takes into account both agricultural and non-i
 Implementation of the WA+ framework involves automated collection, pre-processing and computation of the water balance for a river basin and its sub-basins through the WA+ toolbox. The customized framework for the Amman Zarqa basin consists of six major steps to calculate and present the water accounts (Figure 2): i) data download and pre-processing, ii) water balance modeling, iii) calibration/validation of streamflow, iv) estimation of non-agricultural water consumption, v) generation of water accounts, and vi) interpretation and presentation of results.
 """
 
-FRAMEWORK_TEXT_PART2 = """
+FRAMEWORK_TEXT_PART2 = r"""
 During the data preparation step, various remote sensing datasets and tabular data are acquired from different sources. These datasets are then prepared for input and analyzed to select the most representative datasets for the basin of interest. This involves comparison with available in situ data, and any calibration needed to address systematic errors in the remotely sensed data.
 During the second step, the hydrological variability of the basin is characterized by computing various water balance indicators across the watershed using a water balance model. Assessment of the water balance is the core component of the approach; water balance equations are used to describe the flow of water in and out of a system. For the customized WA+ approach for Jordan, the water balance equation is calculated following Equation 4. The change in water storage (ΔS) within a river basin (or sub-basin) is calculated over a monitoring period (Δt) as the difference between the incoming and outgoing water flows. The incoming flows consist of rainfall (precipitation; P) and manmade inflows (Qin), and the outgoing flows consist of evapotranspiration (ET), treated waste water returned to stream (Qwwt), sectorial water consumption (CWsec), and outflows (Qout).
 
-"$$\\frac{\Delta S}{\Delta t} = (P + Q_{in}) - (ET + CW_{sec} + Q_{WWT} + Q_{natural}) \quad (4)$$"
+"$$\frac{\Delta S}{\Delta t} = (P + Q_{in}) - (ET + CW_{sec} + Q_{WWT} + Q_{natural}) \quad (4)$$"
 
 Precipitation and evaporation data were extracted from various remote sensing datasets; data on inflows (water imports for municipal use) and outflows (streamflows from gauge stations used for runoff calibration) were acquired from provided national databases.
 In the fourth step, the water balance results were validated and the model was calibrated by comparing the water balance parameters with in situ data.
@@ -881,34 +881,53 @@ def get_home_content():
     return html.Div([
         # Hero Section
         html.Div(className="hero-section", style={
-            "backgroundImage": f"linear-gradient(rgba(43, 88, 122, 0.7), rgba(43, 88, 122, 0.8)), url('{app.get_asset_url('jordan_home.png')}')",
+            "backgroundImage": f"linear-gradient(rgba(0, 78, 162, 0.8), rgba(0, 123, 255, 0.6)), url('{app.get_asset_url('jordan_home.png')}')",
             "backgroundSize": "cover",
             "backgroundPosition": "center",
-            "padding": "100px 20px",
+            "height": "70vh",
+            "display": "flex",
+            "flexDirection": "column",
+            "justifyContent": "center",
+            "alignItems": "center",
             "textAlign": "center",
             "color": "white",
-            "marginBottom": "40px"
+            "marginBottom": "60px"
         }, children=[
-            html.H1("Rapid Water Accounting Dashboard - Jordan", style={"fontSize": "3.5rem", "fontWeight": "700", "marginBottom": "1rem"}),
-            html.P("Empowering sustainable water management through advanced remote sensing data and hydrological modeling.", style={"fontSize": "1.5rem", "fontWeight": "300", "maxWidth": "800px", "margin": "0 auto"}),
+            html.H1("Rapid Water Accounting Dashboard", style={"fontSize": "4.5rem", "fontWeight": "800", "marginBottom": "1rem", "textShadow": "2px 2px 10px rgba(0,0,0,0.3)"}),
+            html.H2("Jordan National Assessment", style={"fontSize": "2.5rem", "fontWeight": "400", "marginBottom": "2rem", "opacity": "0.9"}),
+            html.P("Empowering sustainable water management through advanced remote sensing data and hydrological modeling.",
+                   style={"fontSize": "1.2rem", "fontWeight": "300", "maxWidth": "800px", "margin": "0 auto 3rem auto", "lineHeight": "1.6"}),
+            dbc.Button("Explore Analysis", id="btn-explore", className="btn-gradient", size="lg")
         ]),
         # Features Section
-        html.Div(className="content-section", style={"maxWidth": "1200px", "margin": "0 auto", "padding": "0 20px"}, children=[
-            html.Div(className="grid-3", style={"display": "grid", "gridTemplateColumns": "repeat(auto-fit, minmax(300px, 1fr))", "gap": "30px"}, children=[
-                html.Div(className="feature-card", style={"backgroundColor": "white", "padding": "30px", "borderRadius": "10px", "boxShadow": "0 4px 6px rgba(0,0,0,0.1)", "borderTop": f"5px solid {THEME_COLOR}", "overflow": "hidden", "textAlign": "center"}, children=[
-                    html.I(className="fas fa-water", style={"fontSize": "50px", "color": THEME_COLOR, "marginBottom": "20px"}),
-                    html.H3("Basin Analysis", style={"color": THEME_COLOR, "fontWeight": "600", "marginBottom": "10px"}),
-                    html.P("Interactive maps and metrics for major basins in Jordan. Analyze inflows, outflows, and storage changes.", style={"color": "#666", "lineHeight": "1.6"})
+        html.Div(className="container", style={"maxWidth": "1200px", "margin": "0 auto", "padding": "0 20px"}, children=[
+            html.Div(className="row g-4", children=[
+                html.Div(className="col-md-4", children=[
+                    html.Div(className="modern-card text-center h-100", children=[
+                        html.Div(style={"background": "linear-gradient(135deg, #eef4fb 0%, #d1e3f8 100%)", "width": "80px", "height": "80px", "borderRadius": "50%", "display": "flex", "alignItems": "center", "justifyContent": "center", "margin": "0 auto 20px auto"}, children=[
+                            html.I(className="fas fa-map-marked-alt", style={"fontSize": "35px", "color": THEME_COLOR}),
+                        ]),
+                        html.H3("Basin Analysis", style={"color": THEME_COLOR, "fontWeight": "700", "marginBottom": "15px"}),
+                        html.P("Interactive maps and metrics for major basins in Jordan. Analyze inflows, outflows, and storage changes.", style={"color": "#64748b", "lineHeight": "1.6"})
+                    ])
                 ]),
-                html.Div(className="feature-card", style={"backgroundColor": "white", "padding": "30px", "borderRadius": "10px", "boxShadow": "0 4px 6px rgba(0,0,0,0.1)", "borderTop": f"5px solid {THEME_COLOR}", "overflow": "hidden", "textAlign": "center"}, children=[
-                    html.I(className="fas fa-cloud-sun-rain", style={"fontSize": "50px", "color": THEME_COLOR, "marginBottom": "20px"}),
-                    html.H3("Climate Data", style={"color": THEME_COLOR, "fontWeight": "600", "marginBottom": "10px"}),
-                    html.P("Visualize long-term precipitation and evapotranspiration trends derived from high-resolution satellite data.", style={"color": "#666", "lineHeight": "1.6"})
+                html.Div(className="col-md-4", children=[
+                    html.Div(className="modern-card text-center h-100", children=[
+                        html.Div(style={"background": "linear-gradient(135deg, #eef4fb 0%, #d1e3f8 100%)", "width": "80px", "height": "80px", "borderRadius": "50%", "display": "flex", "alignItems": "center", "justifyContent": "center", "margin": "0 auto 20px auto"}, children=[
+                            html.I(className="fas fa-cloud-showers-heavy", style={"fontSize": "35px", "color": THEME_COLOR}),
+                        ]),
+                        html.H3("Climate Data", style={"color": THEME_COLOR, "fontWeight": "700", "marginBottom": "15px"}),
+                        html.P("Visualize long-term precipitation and evapotranspiration trends derived from high-resolution satellite data.", style={"color": "#64748b", "lineHeight": "1.6"})
+                    ])
                 ]),
-                html.Div(className="feature-card", style={"backgroundColor": "white", "padding": "30px", "borderRadius": "10px", "boxShadow": "0 4px 6px rgba(0,0,0,0.1)", "borderTop": f"5px solid {THEME_COLOR}", "overflow": "hidden", "textAlign": "center"}, children=[
-                    html.I(className="fas fa-file-alt", style={"fontSize": "50px", "color": THEME_COLOR, "marginBottom": "20px"}),
-                    html.H3("WA+ Reporting", style={"color": THEME_COLOR, "fontWeight": "600", "marginBottom": "10px"}),
-                    html.P("Standardized Water Accounting Plus (WA+) sheets and indicators to support evidence-based decision making.", style={"color": "#666", "lineHeight": "1.6"})
+                html.Div(className="col-md-4", children=[
+                    html.Div(className="modern-card text-center h-100", children=[
+                        html.Div(style={"background": "linear-gradient(135deg, #eef4fb 0%, #d1e3f8 100%)", "width": "80px", "height": "80px", "borderRadius": "50%", "display": "flex", "alignItems": "center", "justifyContent": "center", "margin": "0 auto 20px auto"}, children=[
+                            html.I(className="fas fa-clipboard-list", style={"fontSize": "35px", "color": THEME_COLOR}),
+                        ]),
+                        html.H3("WA+ Reporting", style={"color": THEME_COLOR, "fontWeight": "700", "marginBottom": "15px"}),
+                        html.P("Standardized Water Accounting Plus (WA+) sheets and indicators to support evidence-based decision making.", style={"color": "#64748b", "lineHeight": "1.6"})
+                    ])
                 ])
             ])
         ]),
@@ -925,48 +944,54 @@ def get_modern_analysis_layout():
         # Row 1: Controls (Left) and Study Area Map (Right)
         dbc.Row([
             dbc.Col([
-                html.H4("Controls", style={"color": THEME_COLOR, "marginBottom": "15px"}),
-                html.Label("Select Basin", style={"fontWeight": "bold", "color": THEME_COLOR}),
-                dcc.Dropdown(
-                    id="basin-dropdown",
-                    options=basin_options,
-                    value=None,
-                    placeholder="Select a basin...",
-                    style={"borderRadius": "4px"},
-                    persistence=True,
-                    persistence_type="session"
-                ),
-                html.Br(),
-                # Year Selection Panel
-                html.Div(id="year-selection-panel", style={"display": "none"}, children=[
-                        dbc.Row([
-                        dbc.Col([
-                            html.Label("Start Year", style={"fontWeight": "bold", "color": "#2c3e50"}),
-                            dcc.Dropdown(id="global-start-year-dropdown", clearable=False, style={"borderRadius": "4px"}),
-                        ], width=6),
-                        dbc.Col([
-                            html.Label("End Year", style={"fontWeight": "bold", "color": "#2c3e50"}),
-                            dcc.Dropdown(id="global-end-year-dropdown", clearable=False, style={"borderRadius": "4px"})
-                        ], width=6)
-                    ])
+                html.Div(className="modern-card h-100", children=[
+                    html.H4("Filters", style={"color": THEME_COLOR, "fontWeight": "700", "marginBottom": "20px"}),
+                    html.Label("Basin Selection", style={"fontWeight": "bold", "color": "#64748b", "fontSize": "0.9rem"}),
+                    dcc.Dropdown(
+                        id="basin-dropdown",
+                        options=basin_options,
+                        value=None,
+                        placeholder="Select a basin...",
+                        style={"borderRadius": "8px"},
+                        persistence=True,
+                        persistence_type="session"
+                    ),
+                    html.Br(),
+                    # Year Selection Panel
+                    html.Div(id="year-selection-panel", style={"display": "none"}, children=[
+                            dbc.Row([
+                            dbc.Col([
+                                html.Label("Start Year", style={"fontWeight": "bold", "color": "#64748b", "fontSize": "0.85rem"}),
+                                dcc.Dropdown(id="global-start-year-dropdown", clearable=False),
+                            ], width=6),
+                            dbc.Col([
+                                html.Label("End Year", style={"fontWeight": "bold", "color": "#64748b", "fontSize": "0.85rem"}),
+                                dcc.Dropdown(id="global-end-year-dropdown", clearable=False)
+                            ], width=6)
+                        ])
+                    ]),
                 ]),
             ], width=12, lg=4, className="mb-4 mb-lg-0"),
 
             dbc.Col([
-                html.Div(id="map-content-container", style={"display": "none"}, children=[
-                     html.H4("Study Area Map", style={"color": THEME_COLOR}),
-                     dcc.Loading(dcc.Graph(id="osm-basin-map", style={"height": "450px", "borderRadius": "8px", "overflow": "hidden"}, config={"scrollZoom": True}), type="circle"),
+                html.Div(id="map-content-container", style={"display": "none"}, className="h-100", children=[
+                     html.Div(className="modern-card h-100", style={"padding": "0", "overflow": "hidden"}, children=[
+                         html.Div(style={"padding": "15px 20px", "borderBottom": "1px solid #eee"}, children=[
+                             html.H4("Study Area Map", style={"color": THEME_COLOR, "fontWeight": "700", "margin": "0"}),
+                         ]),
+                         dcc.Loading(dcc.Graph(id="osm-basin-map", style={"height": "385px"}, config={"scrollZoom": True}), type="circle"),
+                     ])
                 ])
             ], width=12, lg=8)
-        ], className="mb-4"),
+        ], className="mb-4 g-4"),
 
         html.Div(id="main-content-container", style={"display": "none"}, children=[
             # Row 2: Study Area Description (Full Width)
             dbc.Row([
                 dbc.Col([
-                     html.Div(id="study-area-container", style={"padding": "10px", "backgroundColor": "#f8fafc", "borderRadius": "8px", "borderLeft": f"4px solid {THEME_COLOR}"}, children=[
-                        html.H4("Study Area Description", style={"color": THEME_COLOR, "fontSize": "1.1rem"}),
-                        dcc.Markdown(id="study-area-text", className="markdown-content", style={"textAlign": "justify", "fontSize": "0.95rem"})
+                     html.Div(id="study-area-container", className="modern-card", style={"borderLeft": "6px solid #004ea2"}, children=[
+                        html.H4("Study Area Description", style={"color": THEME_COLOR, "fontWeight": "700", "marginBottom": "15px"}),
+                        dcc.Markdown(id="study-area-text", className="markdown-content", style={"textAlign": "justify", "fontSize": "1rem"})
                     ])
                 ])
             ], className="mb-4"),
@@ -974,36 +999,37 @@ def get_modern_analysis_layout():
             # Row 3: Basin Overview & Executive Summary (2 Columns)
             dbc.Row([
                 dbc.Col([
-                     html.H3("Basin Overview", className="text-primary mb-3", style={"color": THEME_COLOR}),
-                     dcc.Loading(html.Div(id="basin-overview-metrics"), type="circle"),
-                ], width=12, lg=6),
+                     html.H3("Basin Overview", style={"color": THEME_COLOR, "fontWeight": "700", "marginBottom": "20px"}),
+                     dcc.Loading(html.Div(id="basin-overview-metrics", className="row g-3"), type="circle"),
+                ], width=12, lg=7),
                 dbc.Col([
-                     html.H3("Executive Summary", className="text-primary mb-3", style={"color": THEME_COLOR}),
+                     html.H3("Executive Summary", style={"color": THEME_COLOR, "fontWeight": "700", "marginBottom": "20px"}),
                      dcc.Loading(html.Div(id="basin-overview-summary"), type="circle"),
-                ], width=12, lg=6)
-            ], className="mb-4"),
+                ], width=12, lg=5)
+            ], className="mb-4 g-4"),
 
             # Row 4: Land Use Map and Statistics (Side-by-Side)
             dbc.Row([
                 dbc.Col([
-                    dbc.Card([
-                        dbc.CardHeader("Land Use Map", style={"fontWeight": "bold", "backgroundColor": "#eff6ff"}),
-                        dbc.CardBody(
-                            dcc.Loading(dcc.Graph(id="land-use-map", style={"height": "500px"}), type="circle"),
-                            style={"padding": "0"}
-                        )
-                    ], className="h-100 shadow-sm")
+                    html.Div(className="modern-card h-100 p-0", style={"overflow": "hidden"}, children=[
+                        html.Div(style={"padding": "15px 20px", "backgroundColor": "#f8fafc", "borderBottom": "1px solid #eee"}, children=[
+                            html.H5("Land Use Spatial Distribution", style={"margin": "0", "fontWeight": "700", "color": THEME_COLOR}),
+                        ]),
+                        dcc.Loading(dcc.Graph(id="land-use-map", style={"height": "500px"}), type="circle"),
+                    ])
                 ], width=12, lg=8),
 
                 dbc.Col([
-                    dbc.Card([
-                        dbc.CardHeader("Land Use Statistics", style={"fontWeight": "bold", "backgroundColor": "#eff6ff"}),
-                        dbc.CardBody([
-                            dcc.Loading(dcc.Graph(id="lu-bar-graph", style={"height": "500px"}), type="circle"),
+                    html.Div(className="modern-card h-100 p-0", style={"overflow": "hidden"}, children=[
+                        html.Div(style={"padding": "15px 20px", "backgroundColor": "#f8fafc", "borderBottom": "1px solid #eee"}, children=[
+                            html.H5("Area Statistics", style={"margin": "0", "fontWeight": "700", "color": THEME_COLOR}),
+                        ]),
+                        html.Div(style={"padding": "20px"}, children=[
+                            dcc.Loading(dcc.Graph(id="lu-bar-graph", style={"height": "460px"}), type="circle"),
                         ])
-                    ], className="h-100 shadow-sm")
+                    ])
                 ], width=12, lg=4)
-            ], className="mb-4"),
+            ], className="mb-4 g-4"),
 
             # Row 5: Land Use Description and Table (Side-by-Side)
             dbc.Row([
@@ -1090,59 +1116,85 @@ def render_tab_content(active_tab):
         return get_home_content()
 
     elif active_tab == "tab-intro":
-        return html.Div(className="container", style={"maxWidth": "1200px"}, children=[
-             html.Div(className="graph-card", style={"padding": "30px", "backgroundColor": "white", "borderRadius": "10px", "boxShadow": "0 4px 6px rgba(0,0,0,0.1)", "marginBottom": "30px"}, children=[
-                html.H2("Introduction", style={"color": THEME_COLOR, "marginBottom": "20px"}),
+        return html.Div(className="container py-5", style={"maxWidth": "1200px"}, children=[
+             html.Div(className="modern-card mb-5", children=[
+                html.H2("Introduction", style={"color": THEME_COLOR, "fontWeight": "700", "marginBottom": "25px", "borderBottom": "3px solid #004ea2", "display": "inline-block", "paddingBottom": "10px"}),
                 dcc.Markdown(INTRO_TEXT, className="markdown-content"),
-                dcc.Markdown("""
-                    This dashboard provides a rapid assessment of water resources in Jordan using the Water Accounting Plus (WA+) framework.
-                    It is designed to provide a comprehensive overview of water availability, use, and consumption in a selected basin.
-                """, className="markdown-content"),
+                html.Div(className="alert alert-primary mt-4", role="alert", children=[
+                    dcc.Markdown("""
+                        **Quick Summary:** This dashboard provides a rapid assessment of water resources in Jordan using the Water Accounting Plus (WA+) framework.
+                        It is designed to provide a comprehensive overview of water availability, use, and consumption in a selected basin.
+                    """, style={"marginBottom": "0"}),
+                ])
             ]),
-            html.Div(className="graph-card", style={"padding": "30px", "backgroundColor": "white", "borderRadius": "10px", "boxShadow": "0 4px 6px rgba(0,0,0,0.1)", "marginBottom": "30px"}, children=[
-                html.H2("Objectives and Deliverables", style={"color": THEME_COLOR, "marginBottom": "20px"}),
+            html.Div(className="modern-card mb-5", children=[
+                html.H2("Objectives and Deliverables", style={"color": THEME_COLOR, "fontWeight": "700", "marginBottom": "25px", "borderBottom": "3px solid #004ea2", "display": "inline-block", "paddingBottom": "10px"}),
                 dcc.Markdown(OBJECTIVES_TEXT, className="markdown-content")
             ]),
-            html.Div(className="graph-card", style={"padding": "30px", "backgroundColor": "white", "borderRadius": "10px", "boxShadow": "0 4px 6px rgba(0,0,0,0.1)"}, children=[
-                html.H2("Key Terms Glossary", style={"color": THEME_COLOR, "marginBottom": "20px"}),
-                dcc.Input(id="intro-search-input", type="text", placeholder="Search key terms...", style={"width": "100%", "padding": "10px", "borderRadius": "5px", "border": "1px solid #ccc", "marginBottom": "20px"}),
-                html.Div(id="intro-search-results")
+            html.Div(className="modern-card", children=[
+                html.H2("Key Terms Glossary", style={"color": THEME_COLOR, "fontWeight": "700", "marginBottom": "25px", "borderBottom": "3px solid #004ea2", "display": "inline-block", "paddingBottom": "10px"}),
+                html.Div(className="input-group mb-4", children=[
+                    html.Span(className="input-group-text", children=[html.I(className="fas fa-search")]),
+                    dcc.Input(id="intro-search-input", type="text", placeholder="Search key terms...", className="form-control", style={"borderRadius": "0 5px 5px 0"}),
+                ]),
+                html.Div(id="intro-search-results", style={"maxHeight": "400px", "overflowY": "auto", "paddingRight": "10px"})
             ])
         ])
 
     elif active_tab == "tab-framework":
-        return html.Div(className="container", style={"maxWidth": "1200px"}, children=[
-            html.Div(className="graph-card", style={"padding": "30px", "backgroundColor": "white", "borderRadius": "10px", "boxShadow": "0 4px 6px rgba(0,0,0,0.1)", "marginBottom": "30px"}, children=[
+        return html.Div(className="container py-5", style={"maxWidth": "1200px"}, children=[
+            html.Div(className="modern-card mb-5", children=[
+                html.H2("WA+ Analytical Framework", style={"color": THEME_COLOR, "fontWeight": "700", "marginBottom": "30px"}),
                 dcc.Markdown(FRAMEWORK_TEXT_PART1, className="markdown-content", mathjax=True),
-                html.Img(src=f"data:image/svg+xml;base64,{flowchart_svg_encoded}", style={'width': '100%'}),
-                html.P("Figure 2. The WA+ toolbox: main processing modules of the customized WA+ Framework for Jordan.", style={'textAlign': 'center', 'fontWeight': 'bold'}),
+                html.Div(className="text-center my-5 p-4 bg-light rounded-3", children=[
+                    html.Img(src=f"data:image/svg+xml;base64,{flowchart_svg_encoded}", style={'maxWidth': '100%', 'height': 'auto'}),
+                    html.P("Figure 2. The WA+ toolbox processing modules.", style={'fontWeight': '600', 'marginTop': '15px', 'color': '#64748b'}),
+                ]),
                 dcc.Markdown(FRAMEWORK_TEXT_PART2, className="markdown-content", mathjax=True),
-                html.Img(src=f"data:image/svg+xml;base64,{workflow_svg_encoded}", style={'width': '100%'}),
-                html.P("Figure 3. Customized water balance modeling work flow used in the WA+ Framework.", style={'textAlign': 'center', 'fontWeight': 'bold'}),
+                html.Div(className="text-center my-5 p-4 bg-light rounded-3", children=[
+                    html.Img(src=f"data:image/svg+xml;base64,{workflow_svg_encoded}", style={'maxWidth': '100%', 'height': 'auto'}),
+                    html.P("Figure 3. Customized water balance modeling workflow.", style={'fontWeight': '600', 'marginTop': '15px', 'color': '#64748b'}),
+                ]),
                 dcc.Markdown(FRAMEWORK_TEXT_PART3, className="markdown-content", mathjax=True),
             ]),
-            html.Div(className="graph-card", style={"padding": "30px", "backgroundColor": "white", "borderRadius": "10px", "boxShadow": "0 4px 6px rgba(0,0,0,0.1)"}, children=[
-                html.H2("Interactive Water Balance Simulator", style={"color": THEME_COLOR, "marginBottom": "20px"}),
-                html.P("Adjust the sliders to see how different components affect the Basin Storage Change (∆S).", style={"color": "#666"}),
+            html.Div(className="modern-card", children=[
+                html.H2("Water Balance Simulator", style={"color": THEME_COLOR, "fontWeight": "700", "marginBottom": "20px"}),
+                html.P("Adjust the sliders below to simulate how different water components affect the Basin Storage Change (∆S).", className="text-muted mb-5"),
                 dbc.Row([
                     dbc.Col([
-                        html.Label("Precipitation (P)", style={"fontWeight": "bold"}),
-                        dcc.Slider(id="fw-p", min=0, max=1000, value=400, marks={0:'0', 500:'500', 1000:'1000'}, tooltip={"placement": "bottom", "always_visible": True}),
-                        html.Label("Inflows (Qin)", style={"fontWeight": "bold", "marginTop": "15px"}),
-                        dcc.Slider(id="fw-qin", min=0, max=500, value=50, marks={0:'0', 250:'250', 500:'500'}, tooltip={"placement": "bottom", "always_visible": True}),
-                        html.Label("Evapotranspiration (ET)", style={"fontWeight": "bold", "marginTop": "15px"}),
-                        dcc.Slider(id="fw-et", min=0, max=1000, value=450, marks={0:'0', 500:'500', 1000:'1000'}, tooltip={"placement": "bottom", "always_visible": True}),
-                        html.Label("Consumption (CWsec)", style={"fontWeight": "bold", "marginTop": "15px"}),
-                        dcc.Slider(id="fw-cw", min=0, max=500, value=100, marks={0:'0', 250:'250', 500:'500'}, tooltip={"placement": "bottom", "always_visible": True}),
-                    ], width=12, lg=6),
+                        html.Div(className="mb-4", children=[
+                            html.Label("Precipitation (P)", className="fw-bold mb-2"),
+                            dcc.Slider(id="fw-p", min=0, max=1000, value=400, marks={0:'0', 500:'500', 1000:'1000'}, tooltip={"placement": "bottom", "always_visible": True}),
+                        ]),
+                        html.Div(className="mb-4", children=[
+                            html.Label("Inflows (Qin)", className="fw-bold mb-2"),
+                            dcc.Slider(id="fw-qin", min=0, max=500, value=50, marks={0:'0', 250:'250', 500:'500'}, tooltip={"placement": "bottom", "always_visible": True}),
+                        ]),
+                        html.Div(className="mb-4", children=[
+                            html.Label("Evapotranspiration (ET)", className="fw-bold mb-2"),
+                            dcc.Slider(id="fw-et", min=0, max=1000, value=450, marks={0:'0', 500:'500', 1000:'1000'}, tooltip={"placement": "bottom", "always_visible": True}),
+                        ]),
+                        html.Div(className="mb-4", children=[
+                            html.Label("Consumption (CWsec)", className="fw-bold mb-2"),
+                            dcc.Slider(id="fw-cw", min=0, max=500, value=100, marks={0:'0', 250:'250', 500:'500'}, tooltip={"placement": "bottom", "always_visible": True}),
+                        ]),
+                    ], width=12, lg=6, className="pe-lg-5"),
                     dbc.Col([
-                        html.Label("Wastewater Return (Q_WWT)", style={"fontWeight": "bold"}),
-                        dcc.Slider(id="fw-wwt", min=0, max=200, value=30, marks={0:'0', 100:'100', 200:'200'}, tooltip={"placement": "bottom", "always_visible": True}),
-                        html.Label("Recharge (Q_re)", style={"fontWeight": "bold", "marginTop": "15px"}),
-                        dcc.Slider(id="fw-re", min=0, max=200, value=20, marks={0:'0', 100:'100', 200:'200'}, tooltip={"placement": "bottom", "always_visible": True}),
-                        html.Label("Natural Outflow (Q_natural)", style={"fontWeight": "bold", "marginTop": "15px"}),
-                        dcc.Slider(id="fw-nat", min=0, max=200, value=10, marks={0:'0', 100:'100', 200:'200'}, tooltip={"placement": "bottom", "always_visible": True}),
-                        dcc.Graph(id="fw-balance-graph", style={"marginTop": "20px"})
+                        html.Div(className="mb-4", children=[
+                            html.Label("Wastewater Return (Q_WWT)", className="fw-bold mb-2"),
+                            dcc.Slider(id="fw-wwt", min=0, max=200, value=30, marks={0:'0', 100:'100', 200:'200'}, tooltip={"placement": "bottom", "always_visible": True}),
+                        ]),
+                        html.Div(className="mb-4", children=[
+                            html.Label("Recharge (Q_re)", className="fw-bold mb-2"),
+                            dcc.Slider(id="fw-re", min=0, max=200, value=20, marks={0:'0', 100:'100', 200:'200'}, tooltip={"placement": "bottom", "always_visible": True}),
+                        ]),
+                        html.Div(className="mb-4", children=[
+                            html.Label("Natural Outflow (Q_natural)", className="fw-bold mb-2"),
+                            dcc.Slider(id="fw-nat", min=0, max=200, value=10, marks={0:'0', 100:'100', 200:'200'}, tooltip={"placement": "bottom", "always_visible": True}),
+                        ]),
+                        html.Div(className="mt-4", children=[
+                            dcc.Graph(id="fw-balance-graph", style={"height": "300px"}, config={'displayModeBar': False})
+                        ])
                     ], width=12, lg=6)
                 ])
             ])
@@ -1287,16 +1339,18 @@ def update_basin_overview(basin, start_year, end_year):
         
         metric_cards = []
         for m in key_metrics:
-            metric_cards.append(html.Div([
-                html.H4(m['title'], style={"fontSize": "14px", "color": "#64748b", "marginBottom": "5px"}),
-                html.Div(f"{m['value']:.0f} {m['unit']}", style={"fontSize": "24px", "fontWeight": "bold", "color": m['color']})
-            ], style={"display": "inline-block", "width": "45%", "margin": "2%", "padding": "20px", "backgroundColor": "white", "borderRadius": "8px", "boxShadow": "0 2px 4px rgba(0,0,0,0.05)"}))
+            metric_cards.append(html.Div(className="col-6", children=[
+                html.Div(className="modern-card p-3 h-100", style={"borderRadius": "15px"}, children=[
+                    html.H4(m['title'], style={"fontSize": "0.85rem", "color": "#64748b", "fontWeight": "600", "textTransform": "uppercase", "letterSpacing": "0.5px"}),
+                    html.Div(f"{m['value']:.0f} {m['unit']}", style={"fontSize": "1.5rem", "fontWeight": "800", "color": m['color']})
+                ])
+            ]))
 
-        metrics_div = html.Div(metric_cards)
+        metrics_div = html.Div(metric_cards, className="row g-3")
 
-        summary_div = html.Div([
-                html.Ul([html.Li(item, style={"marginBottom": "8px"}) for item in summary_items], style={"paddingLeft": "20px"})
-            ], style={"padding": "20px", "backgroundColor": "#eff6ff", "borderRadius": "8px", "borderLeft": f"4px solid {THEME_COLOR}", "color": "#2c3e50"})
+        summary_div = html.Div(className="modern-card h-100", style={"backgroundColor": "#f0f7ff", "borderLeft": "6px solid #004ea2"}, children=[
+                html.Ul([html.Li(item, style={"marginBottom": "12px", "fontSize": "0.95rem"}) for item in summary_items], style={"paddingLeft": "20px", "listStyleType": "none"})
+            ])
 
         return metrics_div, summary_div
 
